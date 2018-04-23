@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+	
+	
+
+	
+
+</h:head>
+
+<h:body>
+   <h2><center>Avaliação Fatoria</center></h2>
+ 
+    
+	<p:panel header="Gravacao de Produto">
+		   <h:form id="form1">
+			<h:panelGrid columns="2" styleClass=""  cellpadding = "10" cellspacing = "1">
+		
+			    <h:outputText  for="name" value="Nome" style="text-decoration:underline" styleClass="footer"/>
+				<p:inputText id="nome" value="#{mb.produto.nome}"  label="Nome" />
+             	
+               
+                
+				<h:outputText value="Preco" style="text-decoration:underline" />
+				<p:inputText value="#{mb.produto.preco}" />
+				
+				<h:outputText value="Quantidade" style="text-decoration:underline" />
+				<p:inputText value="#{mb.produto.quantidade}" />
+				
+				<h:outputText value="Data de Entrada" style="text-decoration:underline" />
+				<p:inputText value="#{mb.produto.datacadastro}" onkeypress="mascaraData( this, event )">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</p:inputText>
+
+
+			</h:panelGrid>
+			<br/>
+			<p:commandButton value="Gravar" action="#{mb.gravar}" ajax="true"
+					update=":form1"  icon="ui-icon-check" color="#120A2A"
+		
+	 ></p:commandButton>
+			<p:growl></p:growl>
+	</h:form>
+	</p:panel>
+		
+	<p:panel header="Listar Produtos">
+		<h:form id="form2">
+			<p:dataTable rows="15" paginator="true" value="#{mb.produtos}"
+				var="linha"   >
+                                     
+				<p:column headerText="Nome" sortBy="#{linha.nome}" filterBy="#{linha.nome}">
+					<h:outputText value="#{linha.nome}" />
+				</p:column>
+				<p:column headerText="Preco">
+					<h:outputText value="#{linha.preco}" />
+				</p:column>
+				<p:column headerText="Quantidade">
+					<h:outputText value="#{linha.quantidade}" />
+				</p:column>
+				<p:column headerText="Data de entrada">
+					<h:outputText value="#{linha.datacadastro}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Acoes" style="text-align: center">
+					<p:commandButton value="Excluir" action="#{mb.excluir(linha)}"
+						ajax="false" icon="ui-icon-search"></p:commandButton>
+					<p:commandButton value="Alterar" ajax="true"
+						onclick="PF('alterar').show()" update=":form3"  icon="ui-icon-search">
+						<f:setPropertyActionListener value="#{linha}"
+							target="#{mb.produto}">
+
+						</f:setPropertyActionListener>
+					</p:commandButton>
+
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+
+	<p:dialog header="Alterar" widgetVar="alterar" modal="true">
+		<h:form id="form3">
+			<h:inputHidden value="#{mb.produto.idProduto}"></h:inputHidden>
+			<p:panelGrid columns="2">
+				<h:outputText value="Nome" />
+				<p:inputText value="#{mb.produto.nome}"></p:inputText>
+
+				<h:outputText value="Preco" />
+				<p:inputText value="#{mb.produto.preco}"></p:inputText>
+
+				<h:outputText value="Quantidade" />
+				<p:inputText value="#{mb.produto.quantidade}"></p:inputText>
+				
+				<h:outputText value="Data de Entrada" />
+				<p:inputText value="#{mb.produto.datacadastro}" onkeypress="mascaraData( this, event )">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</p:inputText>
+				
+				
+				<p:commandButton value="Alterar" ajax="true" update=":form2, :form3" icon="ui-icon-search"
+					onclick="PF('alterar').hide()" action="#{mb.alterar}" >
+				</p:commandButton>
+
+				<p:growl></p:growl>
+			</p:panelGrid>
+		
+		</h:form>
+	</p:dialog>
+		<p:commandButton value="Atualizar Lista" action="#{mb.listar}" ajax="true"
+					update=":form2" icon="ui-icon-search"></p:commandButton>
+	
+
+
+<script type="text/javascript">
+	
+		function mascaraData( campo, e )
+		{
+			var kC = (document.all) ? event.keyCode : e.keyCode;
+			var data = campo.value;
+			
+			if( kC!=8 || kC!=46 )
+			{
+				if( data.length==2 )
+				{
+					campo.value = data += '/';
+				}
+				else if( data.length==5 )
+				{
+					campo.value = data += '/';
+				}
+				else
+					campo.value = data;
+			}
+		}
+
+</script>
+
+
+
+</h:body>
+
+
+
+</html>
